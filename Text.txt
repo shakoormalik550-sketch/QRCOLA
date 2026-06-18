@@ -1,0 +1,86 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR COLA | Refreshment Redefined</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/@react-three/fiber@8.15.12/dist/react-three-fiber.umd.js"></script>
+    <script src="https://unpkg.com/@react-three/drei@9.92.3/dist/react-three-drei.umd.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; background: #0a0a0a; color: white; overflow: hidden; }
+        #root { height: 100vh; width: 100vw; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { Canvas, useFrame } = ReactThreeFiber;
+        const { OrbitControls, Float, Text, Environment, PerspectiveCamera } = ReactThreeDrei;
+
+        function ColaBottle() {
+            const mesh = React.useRef();
+            useFrame((state) => {
+                mesh.current.rotation.y += 0.005;
+            });
+            return (
+                <group ref={mesh}>
+                    <mesh castShadow>
+                        <cylinderGeometry args={[0.6, 0.7, 2.5, 32]} />
+                        <meshStandardMaterial color="#330000" metalness={0.8} roughness={0.2} envMapIntensity={2} />
+                    </mesh>
+                    <mesh position={[0, 1.25, 0]}>
+                        <cylinderGeometry args={[0.2, 0.2, 0.3, 32]} />
+                        <meshStandardMaterial color="#888" />
+                    </mesh>
+                </group>
+            );
+        }
+
+        function App() {
+            const handleOrder = () => {
+                const msg = encodeURIComponent("Hi! I'd like to order a QR COLA.");
+                window.open(`https://wa.me/923029112840?text=${msg}`, '_blank');
+            };
+
+            return (
+                <div className="relative w-full h-full flex flex-col items-center justify-center">
+                    <div className="absolute top-10 left-10 z-10 p-8 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl">
+                        <h1 className="text-5xl font-black italic tracking-tighter text-white">QR COLA</h1>
+                        <p className="text-gray-300 mt-2 text-lg">Scan. Refresh. Repeat.</p>
+                        <button 
+                            onClick={handleOrder}
+                            className="mt-6 px-8 py-4 bg-[#25D366] hover:bg-[#128C7E] transition-all font-bold rounded-full shadow-lg flex items-center gap-2"
+                        >
+                            Order on WhatsApp
+                        </button>
+                    </div>
+
+                    <Canvas shadows camera={{ position: [0, 0, 6], fov: 45 }}>
+                        <PerspectiveCamera makeDefault position={[0, 0, 6]} />
+                        <ambientLight intensity={0.5} />
+                        <spotLight position={[5, 5, 5]} intensity={1} castShadow />
+                        <Environment preset="city" />
+                        
+                        <Float speed={3} rotationIntensity={0.5} floatIntensity={0.5}>
+                            <ColaBottle />
+                        </Float>
+                        <OrbitControls enableZoom={false} autoRotate={false} />
+                    </Canvas>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
+```
